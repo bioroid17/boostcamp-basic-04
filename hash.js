@@ -6,23 +6,13 @@ class HashMap {
     this.loadFactor = loadFactor; // 로드 팩터 설정
   }
 
-  // private 메소드
-  #hash(key) {
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash += key.charCodeAt(i);
-    }
-    console.log(`key: ${key}, hash: ${hash}`);
-    return hash % this.capacity;
-  }
-
   clear() {
     this.keyList = [];
     this.valueList = [];
   }
 
   containsKey(key) {
-    const index = this.keyList.indexOf(this.#hash(key));
+    const index = this.keyList.indexOf(key);
     if (index !== -1) {
       return true;
     } else {
@@ -32,7 +22,7 @@ class HashMap {
 
   get(key) {
     if (this.containsKey(key)) {
-      const index = this.keyList.indexOf(this.#hash(key));
+      const index = this.keyList.indexOf(key);
       return this.valueList[index];
     } else {
       throw new Error("해당 key가 존재하지 않습니다.");

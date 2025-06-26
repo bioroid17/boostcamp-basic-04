@@ -1,0 +1,19 @@
+{
+  "name": "mission04",
+  "version": "1.0.0",
+  "description": "네이버 부스트캠프 베이직 미션 4",
+  "main": "hash.js",
+  "scripts": {
+    "start": "node hash.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bioroid17/boostcamp-basic-04.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bioroid17/boostcamp-basic-04/issues"
+  },
+  "homepage": "https://github.com/bioroid17/boostcamp-basic-04#readme"
+}

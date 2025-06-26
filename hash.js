@@ -1,15 +1,28 @@
 class HashMap {
-  constructor() {
+  constructor(capacity = 16, loadFactor = 0.75) {
     this.keyList = [];
     this.valueList = [];
+    this.capacity = capacity; // 초기 용량 설정
+    this.loadFactor = loadFactor; // 로드 팩터 설정
   }
+
+  // private 메소드
+  #hash(key) {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash += key.charCodeAt(i);
+    }
+    console.log(`key: ${key}, hash: ${hash}`);
+    return hash % this.capacity;
+  }
+
   clear() {
     this.keyList = [];
     this.valueList = [];
   }
 
   containsKey(key) {
-    const index = this.keyList.indexOf(key);
+    const index = this.keyList.indexOf(this.#hash(key));
     if (index !== -1) {
       return true;
     } else {
@@ -19,7 +32,7 @@ class HashMap {
 
   get(key) {
     if (this.containsKey(key)) {
-      const index = this.keyList.indexOf(key);
+      const index = this.keyList.indexOf(this.#hash(key));
       return this.valueList[index];
     } else {
       throw new Error("해당 key가 존재하지 않습니다.");
@@ -41,6 +54,10 @@ class HashMap {
     } else {
       this.keyList.push(key);
       this.valueList.push(value);
+    }
+
+    if (this.size() >= this.capacity * this.loadFactor) {
+      this.capacity *= 2; // 용량을 두 배로 증가
     }
   }
 

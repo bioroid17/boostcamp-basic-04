@@ -1,14 +1,41 @@
 class HashMap {
   constructor(capacity = 16, loadFactor = 0.75) {
+    this.hashcodeList = [];
     this.keyList = [];
     this.valueList = [];
     this.capacity = capacity; // 초기 용량 설정
     this.loadFactor = loadFactor; // 로드 팩터 설정
   }
 
+  #hash(key) {
+    const strKey = String(key);
+    let hash = 0;
+    for (let i = 0; i < strKey.length; i++) {
+      hash += key.charCodeAt(i);
+    }
+    return hash % this.capacity;
+  }
+
+  #rehashAll() {
+    this.hashcodeList = [];
+    for (let i = 0; i < this.keyList.length; i++) {
+      const key = this.keyList[i];
+      const index = this.#hash(key);
+      if (this.hashcodeList.includes(index)) {
+        this.capacity *= 2; // 용량을 두 배로 증가
+        this.#rehashAll(); // 충돌이 발생하면 재해시
+        return;
+      } else {
+        this.hashcodeList.push(index);
+      }
+    }
+  }
+
   clear() {
+    this.hashcodeList = [];
     this.keyList = [];
     this.valueList = [];
+    this.capacity = 16; // 초기 용량으로 재설정
   }
 
   containsKey(key) {
@@ -44,18 +71,24 @@ class HashMap {
     } else {
       this.keyList.push(key);
       this.valueList.push(value);
-    }
-
-    if (this.size() >= this.capacity * this.loadFactor) {
-      this.capacity *= 2; // 용량을 두 배로 증가
+      const hash = this.#hash(key);
+      if (
+        this.hashcodeList.includes(hash) ||
+        this.size() >= this.capacity * this.loadFactor
+      ) {
+        this.capacity *= 2; // 용량을 두 배로 증가
+        this.#rehashAll(); // 충돌이 발생하거나 해시맵 크기가 일정 이상이 되면 재해시
+      }
+      this.hashcodeList.push(this.#hash(key));
     }
   }
 
   remove(key) {
     if (this.containsKey(key)) {
       const index = this.keyList.indexOf(key);
-      const removedKey = this.keyList.splice(index, 1);
-      const removedValue = this.valueList.splice(index, 1);
+      this.keyList.splice(index, 1);
+      this.valueList.splice(index, 1);
+      this.hashcodeList.splice(index, 1);
     }
   }
 
@@ -71,6 +104,8 @@ hashmap.put("name", "Alice");
 hashmap.put("age", 30);
 console.log(hashmap);
 console.log(hashmap.isEmpty()); // false
+console.log(hashmap.size()); // 2
+hashmap.put("name", "Jack");
 console.log(hashmap.size()); // 2
 console.log(hashmap.containsKey("age")); // true
 console.log(hashmap.get("age")); // 30
